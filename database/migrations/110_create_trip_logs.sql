@@ -1,0 +1,31 @@
+USE cargoconnect_db;
+
+CREATE TABLE IF NOT EXISTS trip_logs (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  shipment_id BIGINT UNSIGNED NOT NULL,
+  assignment_id BIGINT UNSIGNED NULL,
+  driver_id BIGINT UNSIGNED NULL,
+  vehicle_id BIGINT UNSIGNED NULL,
+  status VARCHAR(30) NOT NULL,
+  title VARCHAR(120) NOT NULL,
+  description TEXT NULL,
+  location_text VARCHAR(255) NULL,
+  latitude DECIMAL(10,7) NULL,
+  longitude DECIMAL(10,7) NULL,
+  event_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP NULL DEFAULT NULL,
+  PRIMARY KEY (id),
+  KEY idx_trip_logs_shipment_time (shipment_id, event_time),
+  KEY idx_trip_logs_assignment_id (assignment_id),
+  KEY idx_trip_logs_driver_id (driver_id),
+  KEY idx_trip_logs_vehicle_id (vehicle_id),
+  KEY idx_trip_logs_status (status),
+  KEY idx_trip_logs_deleted_at (deleted_at),
+  CONSTRAINT fk_trip_logs_shipment_id FOREIGN KEY (shipment_id) REFERENCES shipments (id) ON UPDATE CASCADE ON DELETE RESTRICT,
+  CONSTRAINT fk_trip_logs_assignment_id FOREIGN KEY (assignment_id) REFERENCES assignments (id) ON UPDATE CASCADE ON DELETE SET NULL,
+  CONSTRAINT fk_trip_logs_driver_id FOREIGN KEY (driver_id) REFERENCES drivers (id) ON UPDATE CASCADE ON DELETE SET NULL,
+  CONSTRAINT fk_trip_logs_vehicle_id FOREIGN KEY (vehicle_id) REFERENCES vehicles (id) ON UPDATE CASCADE ON DELETE SET NULL,
+  CONSTRAINT chk_trip_logs_status CHECK (status IN ('pending', 'approved', 'assigned', 'accepted', 'pickup_completed', 'in_transit', 'delivered', 'completed', 'cancelled', 'delayed', 'issue_reported'))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

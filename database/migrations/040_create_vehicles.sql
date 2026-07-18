@@ -1,0 +1,32 @@
+USE cargoconnect_db;
+
+CREATE TABLE IF NOT EXISTS vehicles (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  vehicle_number VARCHAR(40) NOT NULL,
+  registration_number VARCHAR(80) NOT NULL,
+  vehicle_type VARCHAR(30) NOT NULL,
+  model VARCHAR(120) NULL,
+  capacity_kg DECIMAL(10,2) NOT NULL,
+  fuel_type VARCHAR(20) NOT NULL,
+  insurance_expiry_date DATE NULL,
+  service_due_date DATE NULL,
+  availability_status VARCHAR(20) NOT NULL DEFAULT 'available',
+  assigned_driver_id BIGINT UNSIGNED NULL,
+  notes TEXT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP NULL DEFAULT NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_vehicles_vehicle_number (vehicle_number),
+  UNIQUE KEY uq_vehicles_registration_number (registration_number),
+  KEY idx_vehicles_vehicle_type (vehicle_type),
+  KEY idx_vehicles_availability_status (availability_status),
+  KEY idx_vehicles_assigned_driver_id (assigned_driver_id),
+  KEY idx_vehicles_service_due_date (service_due_date),
+  KEY idx_vehicles_deleted_at (deleted_at),
+  CONSTRAINT fk_vehicles_assigned_driver_id FOREIGN KEY (assigned_driver_id) REFERENCES drivers (id) ON UPDATE CASCADE ON DELETE SET NULL,
+  CONSTRAINT chk_vehicles_vehicle_type CHECK (vehicle_type IN ('bike', 'mini_truck', 'truck', 'heavy_truck', 'refrigerated_truck', 'van')),
+  CONSTRAINT chk_vehicles_fuel_type CHECK (fuel_type IN ('petrol', 'diesel', 'cng', 'electric', 'hybrid')),
+  CONSTRAINT chk_vehicles_availability_status CHECK (availability_status IN ('available', 'assigned', 'maintenance', 'inactive')),
+  CONSTRAINT chk_vehicles_capacity_kg CHECK (capacity_kg > 0)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -1,0 +1,32 @@
+USE cargoconnect_db;
+
+CREATE TABLE IF NOT EXISTS assignments (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  assignment_code VARCHAR(40) NOT NULL,
+  shipment_id BIGINT UNSIGNED NOT NULL,
+  driver_id BIGINT UNSIGNED NOT NULL,
+  vehicle_id BIGINT UNSIGNED NOT NULL,
+  assigned_by_user_id BIGINT UNSIGNED NULL,
+  assignment_status VARCHAR(30) NOT NULL DEFAULT 'assigned',
+  assigned_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  accepted_at TIMESTAMP NULL DEFAULT NULL,
+  rejected_at TIMESTAMP NULL DEFAULT NULL,
+  rejection_reason VARCHAR(255) NULL,
+  started_at TIMESTAMP NULL DEFAULT NULL,
+  completed_at TIMESTAMP NULL DEFAULT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP NULL DEFAULT NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_assignments_assignment_code (assignment_code),
+  KEY idx_assignments_shipment_id (shipment_id),
+  KEY idx_assignments_driver_status (driver_id, assignment_status),
+  KEY idx_assignments_vehicle_status (vehicle_id, assignment_status),
+  KEY idx_assignments_assigned_by_user_id (assigned_by_user_id),
+  KEY idx_assignments_deleted_at (deleted_at),
+  CONSTRAINT fk_assignments_shipment_id FOREIGN KEY (shipment_id) REFERENCES shipments (id) ON UPDATE CASCADE ON DELETE RESTRICT,
+  CONSTRAINT fk_assignments_driver_id FOREIGN KEY (driver_id) REFERENCES drivers (id) ON UPDATE CASCADE ON DELETE RESTRICT,
+  CONSTRAINT fk_assignments_vehicle_id FOREIGN KEY (vehicle_id) REFERENCES vehicles (id) ON UPDATE CASCADE ON DELETE RESTRICT,
+  CONSTRAINT fk_assignments_assigned_by_user_id FOREIGN KEY (assigned_by_user_id) REFERENCES users (id) ON UPDATE CASCADE ON DELETE SET NULL,
+  CONSTRAINT chk_assignments_status CHECK (assignment_status IN ('assigned', 'accepted', 'rejected', 'started', 'pickup_completed', 'in_transit', 'delivered', 'completed', 'cancelled'))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

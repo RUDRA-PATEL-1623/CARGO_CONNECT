@@ -1,0 +1,39 @@
+{
+  "name": "cargoconnect-backend",
+  "version": "0.1.0",
+  "description": "CargoConnect Node.js and Express.js API foundation.",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "health": "node src/database/checkConnection.js",
+    "seed": "node src/database/seedDatabase.js"
+  },
+  "keywords": [
+    "cargoconnect",
+    "express",
+    "mysql",
+    "logistics"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-validator": "^7.2.1",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^2.1.1",
+    "mysql2": "^3.11.5",
+    "nodemailer": "^8.0.7",
+    "pdfkit": "^0.18.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
